@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <SomethingDigital_SessionBackend>
+            <version>1.0.0</version>
+        </SomethingDigital_SessionBackend>
+    </modules>
+
+    <global>
+        <models>
+            <sd_sessionbackend>
+                <class>SomethingDigital_SessionBackend_Model</class>
+            </sd_sessionbackend>
+
+            <core>
+                <rewrite>
+                    <session>SomethingDigital_SessionBackend_Model_Session</session>
+                </rewrite>
+            </core>
+        </models>
+    </global>
+</config>
