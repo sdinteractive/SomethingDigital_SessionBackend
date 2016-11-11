@@ -42,7 +42,7 @@ class SomethingDigital_SessionBackend_Model_Migrate extends SomethingDigital_Ses
         }
     }
 
-	public function open($save_path, $session_name)
+    public function open($save_path, $session_name)
     {
         // $save_path is just the class name.
 
@@ -85,14 +85,15 @@ class SomethingDigital_SessionBackend_Model_Migrate extends SomethingDigital_Ses
         }
     }
 
-	public function read($session_id)
+    public function read($session_id)
     {
         // Try the destination first.
         $data = $this->to === null ? parent::read($session_id) : $this->to->read($session_id);
-        if ($data === '') {
+        // Note: let's be explicit, we don't want to coerce a string to an integer.
+        if ($data === '' || $data === false || $data === null) {
             // Not found, let's look at the source.
             $data = $this->from === null ? parent::read($session_id) : $this->from->read($session_id);
-            if ($data !== '') {
+            if ($data !== '' && $data !== false && $data !== null) {
                 // Move the data over right away.
                 $success = $this->from === null ? parent::write($session_id, $data) : $this->from->write($session_id, $data);
             } else {
@@ -108,27 +109,27 @@ class SomethingDigital_SessionBackend_Model_Migrate extends SomethingDigital_Ses
         return $data;
     }
 
-	public function write($session_id, $data)
+    public function write($session_id, $data)
     {
         // Always write to the destination.
         return $this->to === null ? parent::write($session_id, $data) : $this->to->write($session_id, $data);
     }
 
-	public function close()
+    public function close()
     {
         $from_success = $this->from === null ? parent::close() : $this->from->close();
         $to_success = $this->to === null ? parent::close() : $this->to->close();
         return $from_success && $to_success;
     }
 
-	public function destroy($session_id)
+    public function destroy($session_id)
     {
         $from_success = $this->from === null ? parent::destroy($session_id) : $this->from->destroy($session_id);
         $to_success = $this->to === null ? parent::destroy($session_id) : $this->to->destroy($session_id);
         return $from_success || $to_success;
     }
 
-	public function gc($maxlifetime)
+    public function gc($maxlifetime)
     {
         $from_success = $this->from === null ? parent::gc($maxlifetime) : $this->from->gc($maxlifetime);
         $to_success = $this->to === null ? parent::gc($maxlifetime) : $this->to->gc($maxlifetime);
