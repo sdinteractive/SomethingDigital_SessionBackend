@@ -72,7 +72,7 @@ class SomethingDigital_SessionBackend_Model_Migrate extends SomethingDigital_Ses
         } elseif ($type === 'db') {
             // We specifically don't want a rewrite here - Cm_RedisSession uses one.
             $model = Mage::getResourceModel('core/session');
-            if (in_array('Cm_RedisSession_Model_Session', class_parents($model))) {
+            if (is_a($model, 'Cm_RedisSession_Model_Session')) {
                 return new Mage_Core_Model_Resource_Session();
             }
             return $model;
